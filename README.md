@@ -4,9 +4,11 @@
 
 ## What the app does
 
-The Historical Unit Converter is a web application for converting historical measurement units into modern equivalents. It is built with Next.js and leverages the fp-ts library to implement a purely functional conversion.
+The Historical Unit Converter is a web application for converting historical units into modern measurements. It is built with Next.js and leverages the fp-ts library to implement a purely functional conversion.
 
-- Convert values between a catalogue of historical units
+### Key Features
+
+- Convert historical units into modern measurements
 - Pure conversion logic separated from UI
 - Avaiable Polish and English language
 - Demonstrates functional programming concepts: functors, monads, natural transformations, and monadic operations
