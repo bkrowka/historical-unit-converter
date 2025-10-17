@@ -1,0 +1,74 @@
+{
+  "length": {
+    "name": "length",
+    "standardUnit": "meter",
+    "historical": {
+      "łokieć": { "toStandard": 0.595 },
+      "stopa": { "toStandard": 0.2978 },
+      "palec": { "toStandard": 0.0248 }
+    },
+    "modern": {
+      "meter": { "toStandard": 1 },
+      "kilometer": { "toStandard": 1000 },
+      "foot_modern": { "toStandard": 0.3048 },
+      "inch_modern": { "toStandard": 0.0254 }
+    }
+  },
+  "area": {
+    "name": "area",
+    "standardUnit": "square_meter",
+    "historical": {
+      "morga": { "toStandard": 5985 },
+      "łan": { "toStandard": 17956 },
+      "włóka": { "toStandard": 17955 }
+    },
+    "modern": {
+      "square_meter": { "toStandard": 1 },
+      "hectare": { "toStandard": 10000 },
+      "acre": { "toStandard": 4046.86 }
+    }
+  },
+  "mass": {
+    "name": "mass",
+    "standardUnit": "kilogram",
+    "historical": {
+      "łut": { "toStandard": 0.0127 },
+      "funt": { "toStandard": 0.405 },
+      "kamień": { "toStandard": 12.976 }
+    },
+    "modern": {
+      "kilogram": { "toStandard": 1 },
+      "gram": { "toStandard": 0.001 },
+      "pound_modern": { "toStandard": 0.453592 }
+    }
+  },
+  "volume": {
+    "name": "volume",
+    "standardUnit": "liter",
+    "historical": {
+      "garniec": { "toStandard": 3.77 },
+      "korzec": { "toStandard": 120.6 },
+      "beczka": { "toStandard": 271.36 }
+    },
+    "modern": {
+      "liter": { "toStandard": 1 },
+      "gallon_us": { "toStandard": 3.78541 },
+      "cubic_meter": { "toStandard": 1000 }
+    }
+  },
+  "time": {
+    "name": "time",
+    "standardUnit": "second",
+    "historical": {
+      "moment": { "toStandard": 90 },
+      "lunar_month": { "toStandard": 2551442.9 },
+      "solar_year": { "toStandard": 31556952 }
+    },
+    "modern": {
+      "second": { "toStandard": 1 },
+      "minute": { "toStandard": 60 },
+      "hour": { "toStandard": 3600 },
+      "day": { "toStandard": 86400 }
+    }
+  }
+}
