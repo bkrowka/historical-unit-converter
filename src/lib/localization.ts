@@ -2,7 +2,7 @@
 export const translations = {
   en: {
     heritageConverter: 'Historical Unit Converter',
-    converterDescription: 'Convert historical units to their modern equivalents.',
+    converterDescription: 'Convert historical units to modern measurements.',
     valueLabel: 'Value',
     enterPlaceholder: 'enter',
     fromLabel: 'From',
@@ -51,8 +51,8 @@ export const translations = {
     },
   },
   pl: {
-    heritageConverter: 'Konwerter Historycznych Jednostek',
-    converterDescription: 'Przeliczaj jednostki historyczne na ich współczesne odpowiedniki.',
+    heritageConverter: 'Konwerter Jednostek Historycznych',
+    converterDescription: 'Przeliczaj jednostki historyczne na współczesne miary.',
     valueLabel: 'Wartość',
     enterPlaceholder: 'wprowadź',
     fromLabel: 'Z',
