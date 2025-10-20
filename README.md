@@ -41,3 +41,9 @@ docker run -d -p 3000:3000 --name historical-unit-converter-container historical
 ```
 
 This builds the app and runs it in a container. The app will be reachable at http://localhost:3000.
+
+Alternatively you can use docker-compose:
+
+```powershell
+docker compose up --build
+```
