@@ -32,25 +32,40 @@ export const languageStore = {
     setLanguageIO(lang)();
     listeners.forEach((fn) => fn());
   },
-
   init: (): ((onInitialized: () => void) => () => void) => (onInitialized) => {
+    const notifyListenersIO: IO<void> = () => {
+      listeners.forEach((fn) => fn());
+    };
+
+    const addStorageListenerIO = (handler: (e: StorageEvent) => void): IO<void> => () => {
+      if (typeof window !== 'undefined') {
+        window.addEventListener('storage', handler as EventListener);
+      }
+    };
+
+    const removeStorageListenerIO = (handler: (e: StorageEvent) => void): IO<void> => () => {
+      if (typeof window !== 'undefined') {
+        window.removeEventListener('storage', handler as EventListener);
+      }
+    };
+
     const onStoreUpdate = () => {
       const newLang = getLanguageIO();
       if (newLang !== currentLang) {
-          currentLang = newLang;
-          listeners.forEach((fn) => fn());
+        currentLang = newLang;
+        notifyListenersIO();
       }
       onInitialized();
     };
 
     currentLang = getLanguageIO();
-    listeners.forEach((fn) => fn());
+    notifyListenersIO();
     onInitialized();
-    
-    window.addEventListener('storage', onStoreUpdate);
-    
+
+    addStorageListenerIO(onStoreUpdate)();
+
     return () => {
-      window.removeEventListener('storage', onStoreUpdate);
+      removeStorageListenerIO(onStoreUpdate)();
     };
-  }
+  },
 };

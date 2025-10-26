@@ -1,6 +1,6 @@
 "use client";
 
-import { useSyncExternalStore, useEffect, useCallback, useMemo, useState } from 'react';
+import { useSyncExternalStore, useCallback, useMemo } from 'react';
 import { languageStore } from '@/lib/language-service';
 import { getTranslation, Language } from '@/lib/localization';
 
@@ -11,14 +11,11 @@ export const useLanguage = () => {
     languageStore.getServerSnapshot
   );
   
-  const [isInitialized, setIsInitialized] = useState(false);
-
-  useEffect(() => {
-    const unsubscribe = languageStore.init()(() => {
-      setIsInitialized(true);
-    });
-    return unsubscribe;
-  }, []);
+  const isInitialized = useSyncExternalStore(
+    (listener) => languageStore.init()(listener),
+    () => languageStore.getSnapshot() !== undefined,
+    () => false
+  );
 
   const setLang = useCallback((lang: Language) => {
     languageStore.setLanguage(lang)();

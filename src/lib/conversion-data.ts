@@ -1,4 +1,4 @@
-import * as T from 'fp-ts/Task';
+import * as TE from 'fp-ts/TaskEither';
 
 export type UnitDetails = {
   name: string;
@@ -14,14 +14,19 @@ export type UnitCategory = {
 
 export type ConversionData = Record<string, UnitCategory>;
 
-export const fetchConversionData: T.Task<ConversionData> = async () => {
-  try {
-    const response = await fetch('/api/conversion-data.json');
-    if (!response.ok) {
-      throw new Error(`Failed to fetch: ${response.statusText}`);
-    }
-    return await response.json();
-  } catch (reason) {
-    throw new Error(`Failed to load conversion data: ${reason}`);
-  }
-};
+export const fetchConversionData = (
+  fetchFn: typeof fetch = fetch,
+): TE.TaskEither<Error, ConversionData> =>
+  TE.tryCatch(
+    async () => {
+      const response = await fetchFn('/api/conversion-data.json');
+      if (!response.ok) {
+        throw new Error(`Failed to fetch: ${response.statusText}`);
+      }
+      return (await response.json()) as ConversionData;
+    },
+    (reason) =>
+      reason instanceof Error
+        ? reason
+        : new Error(`Failed to load conversion data: ${String(reason)}`),
+  );

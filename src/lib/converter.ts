@@ -2,23 +2,84 @@ import * as E from 'fp-ts/Either';
 import * as O from 'fp-ts/Option';
 import { pipe } from 'fp-ts/function';
 import { ConversionData } from './conversion-data';
-import { Language, translations } from './localization';
+import { Language } from './localization';
 
-const parseInput = (input: string, lang: Language): E.Either<string, number> => {
+export type ConversionError =
+  | { type: 'EmptyInput' }
+  | { type: 'InvalidNumber' }
+  | { type: 'UnitSelection' }
+  | { type: 'UnitNotFound'; category: string };
+
+const parseInput = (input: string): E.Either<ConversionError, number> => {
   if (input.trim() === '') {
-    return E.left(translations[lang].errorEmpty);
+    return E.left({ type: 'EmptyInput' });
   }
   const num = parseFloat(input);
   return isNaN(num) || !isFinite(num)
-    ? E.left(translations[lang].errorInvalid)
+    ? E.left({ type: 'InvalidNumber' })
     : E.right(num);
 };
 
-const getUnit = (category: string, unitName: string, conversionData: ConversionData): O.Option<{ toStandard: number }> => {
+const getUnit = (
+  category: string,
+  unitName: string,
+  conversionData: ConversionData
+): O.Option<{ toStandard: number }> => {
   return pipe(
     O.fromNullable(conversionData[category]),
     O.chain(cat => O.fromNullable(cat.historical[unitName] || cat.modern[unitName]))
   );
+};
+
+const validate = (
+  inputValue: string,
+  fromUnitName: string | undefined,
+  toUnitName: string | undefined
+): E.Either<ConversionError, { value: number; from: string; to: string }> =>
+  pipe(
+    parseInput(inputValue),
+    E.chain(value => {
+      const units = pipe(
+        O.fromNullable(fromUnitName),
+        O.chain(from => O.fromNullable(toUnitName)),
+        O.map(() => ({ from: fromUnitName as string, to: toUnitName as string }))
+      );
+
+      return pipe(
+        units,
+        E.fromOption(() => ({ type: 'UnitSelection' } as ConversionError)),
+        E.map(({ from, to }) => ({ value, from, to }))
+      );
+    })
+  );
+
+const getFactors = (
+  category: string,
+  from: string,
+  to: string,
+  conversionData: ConversionData
+): E.Either<ConversionError, { from: { toStandard: number }; to: { toStandard: number } }> => {
+  const fromFactor = getUnit(category, from, conversionData);
+  const toFactor = getUnit(category, to, conversionData);
+
+  const combined = pipe(
+    O.Do,
+    O.apS('from', fromFactor),
+    O.apS('to', toFactor)
+  );
+
+  return pipe(
+    combined,
+    E.fromOption(() => ({ type: 'UnitNotFound', category } as ConversionError))
+  );
+};
+
+const convert = (
+  value: number,
+  factors: { from: { toStandard: number }; to: { toStandard: number } }
+): number => {
+  const valueInStandard = value * factors.from.toStandard;
+  return valueInStandard / factors.to.toStandard;
 };
 
 export const performConversion = (
@@ -26,44 +87,16 @@ export const performConversion = (
   fromUnitName: string,
   toUnitName: string,
   inputValue: string,
-  lang: Language,
-  conversionData: ConversionData,
-): E.Either<string, number> => {
+  _lang: Language,
+  conversionData: ConversionData
+): E.Either<ConversionError, number> => {
   return pipe(
-    parseInput(inputValue, lang),
-    E.chain(value => {
-      const units = pipe(
-        O.fromNullable(fromUnitName),
-        O.chain(from => O.fromNullable(toUnitName)),
-        O.map(() => ({ from: fromUnitName, to: toUnitName }))
-      );
-
-      return pipe(
-        units,
-        E.fromOption(() => translations[lang].errorUnitSelection),
-        E.chain(({ from, to }) => {
-          const fromFactor = getUnit(category, from, conversionData);
-          const toFactor = getUnit(category, to, conversionData);
-          
-          const combinedFactors = pipe(
-            O.Do,
-            O.apS('from', fromFactor),
-            O.apS('to', toFactor)
-          );
-
-          return pipe(
-            combinedFactors,
-            E.fromOption(() => {
-                const categoryName = translations[lang].categories[category as keyof typeof translations.en.categories] || category;
-                return translations[lang].errorUnitNotFound(categoryName);
-            }),
-            E.map(({ from, to }) => {
-              const valueInStandard = value * from.toStandard;
-              return valueInStandard / to.toStandard;
-            })
-          );
-        })
-      );
-    })
+    validate(inputValue, fromUnitName, toUnitName),
+    E.chain(({ value, from, to }) =>
+      pipe(
+        getFactors(category, from, to, conversionData),
+        E.map(factors => convert(value, factors))
+      )
+    )
   );
 };

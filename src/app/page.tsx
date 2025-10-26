@@ -18,8 +18,13 @@ export default function HomePage() {
   useEffect(() => {
     setIsMounted(true);
     const loadData = async () => {
-      const data = await fetchConversionData();
-      setConversionData(data);
+      const task = fetchConversionData();
+      const result = await task();
+      if (result && (result as any)._tag === 'Right') {
+        setConversionData((result as any).right as ConversionData);
+      } else {
+        console.error('Failed to load conversion data', result && (result as any).left);
+      }
     };
     loadData();
   }, []);
