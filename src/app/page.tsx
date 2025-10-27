@@ -11,7 +11,7 @@ import { fetchConversionData, ConversionData } from "@/lib/conversion-data";
 import { useLanguage } from "@/hooks/use-language";
 
 export default function HomePage() {
-  const { t, isInitialized } = useLanguage();
+  const { t, isInitialized, language } = useLanguage();
   const [conversionData, setConversionData] = useState<ConversionData | null>(null);
   const [isMounted, setIsMounted] = useState(false);
 
@@ -63,7 +63,7 @@ export default function HomePage() {
             </TabsList>
             {categories.map((categoryId) => (
               <TabsContent key={categoryId} value={categoryId} className="mt-6">
-                <ConversionInterface categoryId={categoryId} conversionData={conversionData}/>
+                <ConversionInterface categoryId={categoryId} conversionData={conversionData} t={t} language={language} />
               </TabsContent>
             ))}
           </Tabs>

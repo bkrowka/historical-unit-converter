@@ -6,7 +6,7 @@ import { ArrowRight } from 'lucide-react';
 
 import { ConversionData } from '@/lib/conversion-data';
 import { performConversion, ConversionError } from '@/lib/converter';
-import { useLanguage } from '@/hooks/use-language';
+import { Language, getTranslation } from '@/lib/localization';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent } from '@/components/ui/card';
@@ -15,10 +15,11 @@ import { Label } from '@/components/ui/label';
 type ConversionInterfaceProps = {
   categoryId: string;
   conversionData: ConversionData;
+  t: ReturnType<typeof getTranslation>;
+  language: Language;
 };
 
-export function ConversionInterface({ categoryId, conversionData }: ConversionInterfaceProps) {
-  const { language, t } = useLanguage();
+export function ConversionInterface({ categoryId, conversionData, t, language }: ConversionInterfaceProps) {
   const category = conversionData[categoryId];
   
   if (!category) {
