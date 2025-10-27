@@ -79,7 +79,7 @@ export function ConversionInterface({ categoryId, conversionData }: ConversionIn
   }, [t.units]);
 
   const handleConvert = useCallback(() => {
-    const conversionResult = performConversion(categoryId, state.fromUnit, state.toUnit, state.inputValue, language, conversionData);
+    const conversionResult = performConversion(categoryId, state.fromUnit, state.toUnit, state.inputValue, conversionData);
     const errorToString = (err: ConversionError) => {
       switch (err.type) {
         case 'EmptyInput':

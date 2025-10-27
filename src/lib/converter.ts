@@ -87,7 +87,6 @@ export const performConversion = (
   fromUnitName: string,
   toUnitName: string,
   inputValue: string,
-  _lang: Language,
   conversionData: ConversionData
 ): E.Either<ConversionError, number> => {
   return pipe(
