@@ -2,7 +2,6 @@ import * as E from 'fp-ts/Either';
 import * as O from 'fp-ts/Option';
 import { pipe } from 'fp-ts/function';
 import { ConversionData } from './conversion-data';
-import { Language } from './localization';
 
 export type ConversionError =
   | { type: 'EmptyInput' }
